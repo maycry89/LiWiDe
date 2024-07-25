@@ -52,12 +52,12 @@ export default function App() {
       }}
     >
       <Text style={styles.title}>{item.title}</Text>
-      <Pressable
+      {/* <Pressable
         style={styles.deleteButton}
         onPress={() => deleteAttribute(item.id)}
       >
         <Text style={styles.deleteButtonText}>Löschen</Text>
-      </Pressable>
+      </Pressable> */}
     </TouchableOpacity>
   );
 
