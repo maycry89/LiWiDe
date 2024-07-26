@@ -7,6 +7,7 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import IconButton from "./IconButton";
 
 export default function AttributeDetail({
   selectedAttribute,
@@ -46,7 +47,7 @@ export default function AttributeDetail({
 
   const handleDelete = () => {
     onDelete(selectedAttribute.id);
-    onCancel();
+    //onCancel();
   };
 
   return (
@@ -56,56 +57,58 @@ export default function AttributeDetail({
           {!selectedAttribute || editable ? (
             <View>
               <TextInput
-                //placeholder="Attribute"
+                style={styles.textInputTitle}
                 onChangeText={setTextAttribute}
                 value={textAttribute}
               ></TextInput>
               <TextInput
+                style={styles.textInput}
                 onChangeText={setTextSituation}
-                //placeholder="Situation"
                 value={textSituation}
+                multiline={true}
               ></TextInput>
             </View>
           ) : (
             <View>
-              <Text>{selectedAttribute.title}</Text>
-              <Text>{selectedAttribute.situation}</Text>
+              <Text style={styles.title}>{selectedAttribute.title}</Text>
+              <Text style={styles.description}>
+                {selectedAttribute.situation}
+              </Text>
             </View>
           )}
         </View>
         <View style={styles.actions}>
-          {!selectedAttribute || editable ? (
-            <Pressable // SAVE
+          <View style={styles.buttonRow}>
+            {!selectedAttribute || editable ? (
+              <IconButton // --- EDIT
+                onPress={handleSave}
+                icon={"save"}
+                size={40}
+                style={styles.buttons}
+              ></IconButton>
+            ) : (
+              <View style={styles.buttonRow}>
+                <IconButton // --- EDIT
+                  onPress={onEdit}
+                  icon={"edit"}
+                  size={40}
+                  style={styles.buttons}
+                ></IconButton>
+                <IconButton // --- DELETE
+                  onPress={handleDelete}
+                  icon={"delete"}
+                  size={40}
+                  style={styles.buttons}
+                ></IconButton>
+              </View>
+            )}
+            <IconButton // --- DELETE
+              onPress={handleClose}
+              icon={"close"}
+              size={40}
               style={styles.buttons}
-              onPress={handleSave}
-            >
-              <Text style={styles.btnText}>Save</Text>
-            </Pressable>
-          ) : (
-            <View>
-              <Pressable //EDIT
-                style={styles.buttons}
-                onPress={onEdit}
-              >
-                <Text style={styles.btnText}>Edit</Text>
-              </Pressable>
-              <Pressable //DELETE
-                style={styles.buttons}
-                onPress={handleDelete}
-              >
-                <Text style={styles.btnText}>Delete</Text>
-              </Pressable>
-            </View>
-          )}
-
-          <Pressable //CLOSE
-            style={styles.buttons}
-            onPress={() => {
-              handleClose();
-            }}
-          >
-            <Text style={styles.btnText}>Close</Text>
-          </Pressable>
+            ></IconButton>
+          </View>
         </View>
       </View>
     </Modal>
@@ -117,24 +120,61 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#E0E6E9",
   },
   buttons: {
     margin: 10,
     padding: 20,
-    width: 100,
-    backgroundColor: "yellowgreen",
-    borderRadius: 15,
+    //width: 100,
+    backgroundColor: "#606060",
+    borderRadius: 40,
   },
   attributes: {
     marginTop: "30%",
+  },
+  title: {
+    alignSelf: "center",
+    fontSize: 32,
+    marginBottom: 15,
+  },
+  description: {
+    alignSelf: "center",
+    textAlign: "center",
+    fontSize: 25,
+    marginHorizontal: 20,
+    lineHeight: 37,
+  },
+
+  textInputTitle: {
+    padding: 10,
+    alignSelf: "center",
+    fontSize: 32,
+    marginBottom: 15,
+    backgroundColor: "white",
+    borderRadius: 10,
+    color: "gray",
+  },
+  textInput: {
+    padding: 10,
+    backgroundColor: "white",
+    alignSelf: "center",
+    textAlign: "center",
+    fontSize: 25,
+    marginHorizontal: 20,
+    lineHeight: 37,
+    borderRadius: 10,
+    color: "gray",
+  },
+  actions: {
+    marginBottom: "20%",
   },
   btnText: {
     fontSize: 16,
     textAlign: "center",
   },
 
-  actions: {
+  buttonRow: {
     flexDirection: "row",
-    marginBottom: "20%",
+    //marginBottom: "20%",
   },
 });

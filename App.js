@@ -4,11 +4,12 @@ import {
   Text,
   View,
   FlatList,
-  TouchableOpacity,
   Pressable,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AttributeDetail from "./components/AttributeDetail";
+import IconButton from "./components/IconButton";
 
 export default function App() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -44,21 +45,21 @@ export default function App() {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.item}
+    <Pressable
+      style={styles.attribute}
       onPress={() => {
         setSelectedItem(item);
         setModalVisible(true);
       }}
     >
-      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.itemText}>{item.title}</Text>
       {/* <Pressable
         style={styles.deleteButton}
         onPress={() => deleteAttribute(item.id)}
       >
         <Text style={styles.deleteButtonText}>Löschen</Text>
       </Pressable> */}
-    </TouchableOpacity>
+    </Pressable>
   );
 
   const addAttribute = () => {
@@ -86,23 +87,33 @@ export default function App() {
   };
 
   const deleteAttribute = (id) => {
+    setModalVisible(false);
     const newData = data.filter((item) => item.id !== id);
     setData(newData);
     saveData(newData);
     console.log("Gelöscht: " + id);
   };
 
+  const showDeleteAlert = (id) => {
+    Alert.alert(
+      "Eintrag wirklich löschen?",
+      " ",
+      [
+        {
+          text: "Ok",
+          onPress: () => deleteAttribute(id),
+        },
+        {
+          text: "Anders überlegt",
+          onPress: () => console.log("Button 2 gedrückt"),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-      <Pressable style={styles.button} onPress={addAttribute}>
-        <Text style={styles.btnText}>Neu</Text>
-      </Pressable>
-
       <AttributeDetail
         visible={modalVisible}
         selectedAttribute={selectedItem}
@@ -112,8 +123,21 @@ export default function App() {
           console.log("Schließen");
         }}
         onSave={addAttributeToList}
-        onDelete={deleteAttribute}
+        onDelete={showDeleteAlert}
       />
+      <FlatList
+        style={styles.list}
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
+
+      <IconButton
+        onPress={addAttribute}
+        icon={"add"}
+        size={40}
+        style={styles.button}
+      ></IconButton>
     </View>
   );
 }
@@ -121,40 +145,36 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    backgroundColor: "#E0E6E9",
   },
-  item: {
+  list: {
+    marginTop: "20%",
+    width: "100%",
+  },
+  attribute: {
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
-    backgroundColor: "#f9c2ff",
-    borderRadius: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    backgroundColor: "#F3FCFF",
+    borderRadius: 30,
+    alignSelf: "center",
+    shadowColor: "black",
+    elevation: 10,
   },
-  title: {
+  itemText: {
     fontSize: 24,
+    textAlign: "center",
   },
   button: {
-    padding: 20,
-    backgroundColor: "dimgray",
+    padding: 15,
+    marginTop: "7%",
+    backgroundColor: "#606060",
     borderRadius: 40,
-    marginTop: 20,
+    marginBottom: "7%",
+    alignSelf: "center",
   },
   btnText: {
     color: "white",
-  },
-  deleteButton: {
-    backgroundColor: "red",
-    padding: 10,
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: "white",
-    fontSize: 16,
+    textAlign: "center",
   },
 });
